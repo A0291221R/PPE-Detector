@@ -31,6 +31,9 @@ class Detector(
     private var tensorHeight = 0
     private var numChannel = 0
     private var numElements = 0
+    private var confidenceThreshold = CONFIDENCE_THRESHOLD
+    private var iouThreshold = IOU_THRESHOLD
+    private var maxObjectDetected = MAX_OBJECT_DETECTED
 
     private val imageProcessor = ImageProcessor.Builder()
         .add(NormalizeOp(INPUT_MEAN, INPUT_STANDARD_DEVIATION))
@@ -130,6 +133,11 @@ class Detector(
         interpreter.run(imageBuffer, output.buffer)
 
         val bestBoxes = bestBox(output.floatArray)
+
+        // limit the max detection object
+        // Limit the number of detections to MAX_OBJECTS
+        // Limit the number of detections to MAX_OBJECTS
+        val maxObjects = 5 // Set the desired limit here
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
 
         if (bestBoxes == null) {
@@ -145,7 +153,7 @@ class Detector(
         val boundingBoxes = mutableListOf<BoundingBox>()
 
         for (c in 0 until numElements) {
-            var maxConf = CONFIDENCE_THRESHOLD
+            var maxConf = confidenceThreshold
             var maxIdx = -1
             var j = 4
             var arrayIdx = c + numElements * j
@@ -158,7 +166,7 @@ class Detector(
                 arrayIdx += numElements
             }
 
-            if (maxConf > CONFIDENCE_THRESHOLD) {
+            if (maxConf > confidenceThreshold) {
                 val clsName = labels[maxIdx]
                 val cx = array[c] // 0
                 val cy = array[c + numElements] // 1
@@ -192,7 +200,7 @@ class Detector(
         val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
         val selectedBoxes = mutableListOf<BoundingBox>()
 
-        while(sortedBoxes.isNotEmpty()) {
+        while(sortedBoxes.isNotEmpty() && selectedBoxes.size < maxObjectDetected) {
             val first = sortedBoxes.first()
             selectedBoxes.add(first)
             sortedBoxes.remove(first)
@@ -201,7 +209,7 @@ class Detector(
             while (iterator.hasNext()) {
                 val nextBox = iterator.next()
                 val iou = calculateIoU(first, nextBox)
-                if (iou >= IOU_THRESHOLD) {
+                if (iou >= iouThreshold) {
                     iterator.remove()
                 }
             }
@@ -226,6 +234,18 @@ class Detector(
         fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long)
     }
 
+    fun setConfidenceThreshold(value: Float) {
+        confidenceThreshold = value
+    }
+
+    fun setIOUThreshold(value: Float) {
+        iouThreshold = value
+    }
+
+    fun setMaxObjectDetected(value: Int) {
+        maxObjectDetected = value
+    }
+
     companion object {
         private const val INPUT_MEAN = 0f
         private const val INPUT_STANDARD_DEVIATION = 255f
@@ -233,5 +253,6 @@ class Detector(
         private val OUTPUT_IMAGE_TYPE = DataType.FLOAT32
         private const val CONFIDENCE_THRESHOLD = 0.3F
         private const val IOU_THRESHOLD = 0.5F
+        private const val MAX_OBJECT_DETECTED = 10
     }
 }

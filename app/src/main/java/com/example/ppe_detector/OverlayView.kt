@@ -19,6 +19,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     private var bounds = Rect()
 
+    private var strokeWidth: Float = STROKE_WIDTH
+
     init {
         initPaints()
     }
@@ -42,7 +44,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         textPaint.textSize = 50f
 
         boxPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color)
-        boxPaint.strokeWidth = 8F
+        boxPaint.strokeWidth = strokeWidth
         boxPaint.style = Paint.Style.STROKE
     }
 
@@ -78,7 +80,13 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         invalidate()
     }
 
+    fun setStrokeWidth(value: Float) {
+        strokeWidth = value
+        initPaints()
+    }
+
     companion object {
         private const val BOUNDING_RECT_TEXT_PADDING = 8
+        private const val STROKE_WIDTH = 8F
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ppe_detector
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.example.ppe_detector.Constants.LABELS_PATH
 import com.example.ppe_detector.Constants.MODEL_PATH
 import com.example.ppe_detector.databinding.ActivityMainBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -33,18 +35,28 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
     private var cameraProvider: ProcessCameraProvider? = null
     private var detector: Detector? = null
 
+    private lateinit var fab: FloatingActionButton
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var  detectorParamUpdateListener: DetectorParamUpdateHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         cameraExecutor.execute {
             detector = Detector(baseContext, MODEL_PATH, LABELS_PATH, this) {
                 toast(it)
+            }
+            detectorParamUpdateListener = DetectorParamUpdateHandler(baseContext, detector!!, binding.overlay)
+            var bottomSheetFragment = DetectorSettingBottomSheet(detectorParamUpdateListener)
+            val fab = findViewById<FloatingActionButton>(R.id.floatingActionButton)
+            fab.setOnClickListener{
+                // Handle the click event here
+                if (!bottomSheetFragment.isAdded) {
+                    bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+                }
             }
         }
 
@@ -203,3 +215,4 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
         }
     }
 }
+
