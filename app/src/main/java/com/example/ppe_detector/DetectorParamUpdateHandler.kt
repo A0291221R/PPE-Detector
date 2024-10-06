@@ -38,6 +38,6 @@ class DetectorParamUpdateHandler: OnDetectorParameterUpdateListener {
     }
 
     override fun onModelSelected(model: String) {
-        detector.restart(false)
+//        detector.restart(false)
     }
 }

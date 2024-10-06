@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.MaterialComponents.Light"
     tools:context=".DetectorSettingBottomSheet">
 
     <LinearLayout
@@ -19,6 +20,7 @@
             android:layout_gravity="center"
 
             android:text="Detector Setting"
+            android:textColor="#020202"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -29,6 +31,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="Max. Objects Detection"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -52,7 +55,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="30" />
+                android:text="30"
+                android:textColor="#000000"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Confidence Threshold -->
@@ -62,6 +67,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="Confidence Threshold"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -85,7 +91,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="0.25" />
+                android:text="0.25"
+                android:textColor="#000000"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- IoU Threshold -->
@@ -95,6 +103,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="IoU Threshold"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -118,7 +127,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="0.75" />
+                android:text="0.75"
+                android:textColor="#000000"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Bounding Box Stroke Width -->
@@ -128,11 +139,12 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="Bounding box Stroke width"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -151,7 +163,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="2.5" />
+                android:text="2.5"
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -161,6 +175,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="Select Model"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -177,19 +192,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Yolov8n" />
+                android:text="Yolov8n"
+                android:textColor="#000000" />
 
             <RadioButton
                 android:id="@+id/mobilenetV2RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MobileNetV2" />
+                android:text="MobileNetV2"
+                android:textColor="#000000" />
 
             <RadioButton
                 android:id="@+id/efficientNetRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="EfficientNet" />
+                android:text="EfficientNet"
+                android:textColor="#000000" />
 
         </RadioGroup>
 

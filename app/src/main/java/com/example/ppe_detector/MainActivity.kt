@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
 
         bindListeners()
     }
-
     private fun bindListeners() {
 //        binding.apply {
 //            isGpu.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -207,7 +206,9 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
 
     override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
         runOnUiThread {
-//            binding.inferenceTime.text = "${inferenceTime}ms"
+            val fps: Float = if (inferenceTime > 0) 1000f / inferenceTime else 0.0f
+            binding.msTv.text =  "${inferenceTime} ms"
+            binding.fpsTv.text = String.format("%.1f FPS", fps)
             binding.overlay.apply {
                 setResults(boundingBoxes)
                 invalidate()
