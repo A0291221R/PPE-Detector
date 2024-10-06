@@ -6,13 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.TextView
-import com.example.ppe_detector.OnDetectorParameterUpdateListener
-import com.example.ppe_detector.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.slider.Slider
 
-class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetectorParameterUpdateListener) : BottomSheetDialogFragment() {
-
+class DetectorSettingBottomSheet(private val parameterUpdateListener: DetectorParamUpdateHandler) : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +23,6 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetector
             val newValue = value.toInt()
             maxObjectDetectionValue.text = newValue.toString()
             parameterUpdateListener.onMaxObjectsDetectionChanged(newValue)
-//            Toast.makeText(context, "Max Objects Detection: $newValue", Toast.LENGTH_SHORT).show()
         }
 
         // Confidence Threshold Slider
@@ -36,7 +32,6 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetector
             val newValue = value.toFloat()
             confidenceThresholdValue.text =  String.format("%.2f", value)
             parameterUpdateListener.onConfidenceThresholdChanged(newValue)
-//            Toast.makeText(context, "Confidence Threshold: $newValue", Toast.LENGTH_SHORT).show()
         }
 
         // IoU Threshold Slider
@@ -46,7 +41,6 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetector
             val newValue = value.toFloat()
             iouThresholdValue.text = String.format("%.2f", value)
             parameterUpdateListener.onIoUThresholdChanged(newValue)
-//            Toast.makeText(context, "IoU Threshold: $newValue", Toast.LENGTH_SHORT).show()
         }
 
         // Bounding Box Stroke Width Slider
@@ -56,11 +50,20 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetector
             val newValue = value.toFloat()
             boundingBoxStrokeWidthValue.text = String.format("%.2f", value)
             parameterUpdateListener.onBoundingBoxStrokeWidthChanged(newValue)
-//            Toast.makeText(context, "Bounding Box Stroke Width: $newValue", Toast.LENGTH_SHORT).show()
         }
 
         // Model Selection Radio Group
         val modelSelectionGroup = view.findViewById<RadioGroup>(R.id.modelSelectionGroup)
+
+        modelSelectionGroup.check(
+            when (parameterUpdateListener.getLastSelectedModel()) {
+                "Yolov8n" ->  R.id.yolov8nRadioButton
+                "MobileNetV2" ->  R.id.mobilenetV2RadioButton
+                "EfficientNet" ->  R.id.efficientNetRadioButton
+                else -> R.id.yolov8nRadioButton
+            }
+        )
+
         modelSelectionGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedModel = when (checkedId) {
                 R.id.yolov8nRadioButton -> "Yolov8n"
@@ -69,7 +72,6 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: OnDetector
                 else -> ""
             }
             parameterUpdateListener.onModelSelected(selectedModel)
-//            Toast.makeText(context, "Selected Model: $selectedModel", Toast.LENGTH_SHORT).show()
         }
 
         return view

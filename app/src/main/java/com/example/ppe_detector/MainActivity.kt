@@ -1,7 +1,6 @@
 package com.example.ppe_detector
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -25,7 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MainActivity : AppCompatActivity(), Detector.DetectorListener {
+class MainActivity : AppCompatActivity(), Detector.DetectorListener, OnActorUpdateListener {
     private lateinit var binding: ActivityMainBinding
     private val isFrontCamera = false
 
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
             detector = Detector(baseContext, MODEL_PATH, LABELS_PATH, this) {
                 toast(it)
             }
-            detectorParamUpdateListener = DetectorParamUpdateHandler(baseContext, detector!!, binding.overlay)
+            detectorParamUpdateListener = DetectorParamUpdateHandler(baseContext, detector!!, this)
             var bottomSheetFragment = DetectorSettingBottomSheet(detectorParamUpdateListener)
             val fab = findViewById<FloatingActionButton>(R.id.floatingActionButton)
             fab.setOnClickListener{
@@ -214,6 +213,19 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener {
                 invalidate()
             }
         }
+    }
+
+    override fun onModelSelected(model: String) {
+        binding.msTv.text = "--.- ms"
+        binding.fpsTv.text = "--.- FPS"
+        cameraExecutor.submit {
+            detector?.restart(true)
+            binding.inferenceModel.text = model
+        }
+    }
+
+    override fun onBoundingBoxStrokeWidthChanged(value: Float) {
+        binding.overlay.setStrokeWidth(value)
     }
 }
 

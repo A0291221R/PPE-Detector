@@ -94,10 +94,25 @@
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/fps_tv"
-            android:layout_width="wrap_content"
+            android:id="@+id/inference_model"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:background="@drawable/rounded_textview"
+            android:drawableTop="@drawable/ic_inference_model"
+            android:padding="12dp"
+            android:text="Yolov8n"
+            android:textColor="#FFFFFF"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/fps_tv"
+            android:layout_width="100sp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="48dp"
             android:background="@drawable/rounded_textview"
             android:drawableTop="@drawable/baseline_av_timer_24"
             android:padding="12dp"
@@ -105,14 +120,15 @@
             android:textColor="#FFFFFF"
             android:textAlignment="center"
             android:textSize="16sp"
+            app:layout_constraintLeft_toRightOf="@+id/inference_model"
             />
 
         <TextView
             android:id="@+id/ms_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/rounded_textview"
             android:drawableTop="@drawable/baseline_access_time_24"
             android:padding="12dp"

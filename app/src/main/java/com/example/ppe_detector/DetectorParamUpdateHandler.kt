@@ -1,25 +1,27 @@
 package com.example.ppe_detector
 
 import android.content.Context
-import android.widget.Toast
 
+interface OnActorUpdateListener {
+    fun onModelSelected(model: String)
+    fun onBoundingBoxStrokeWidthChanged(value: Float)
+}
 interface OnDetectorParameterUpdateListener {
     fun onMaxObjectsDetectionChanged(value: Int)
     fun onConfidenceThresholdChanged(value: Float)
     fun onIoUThresholdChanged(value: Float)
-    fun onBoundingBoxStrokeWidthChanged(value: Float)
-    fun onModelSelected(model: String)
 }
 
-class DetectorParamUpdateHandler: OnDetectorParameterUpdateListener {
+class DetectorParamUpdateHandler: OnDetectorParameterUpdateListener, OnActorUpdateListener {
     private var context: Context
     private var detector: Detector
-    private var overlay: OverlayView
+    private var actor: OnActorUpdateListener
+    private var lastSelectedModel: String = ""
 
-    constructor(context: Context, detector: Detector, overlay: OverlayView) {
+    constructor(context: Context, detector: Detector, actor: OnActorUpdateListener) {
         this.context = context
         this.detector = detector
-        this.overlay = overlay
+        this.actor = actor
     }
     override fun onMaxObjectsDetectionChanged(value: Int) {
         detector.setMaxObjectDetected(value)
@@ -34,10 +36,17 @@ class DetectorParamUpdateHandler: OnDetectorParameterUpdateListener {
     }
 
     override fun onBoundingBoxStrokeWidthChanged(value: Float) {
-        overlay.setStrokeWidth(value)
+        actor.onBoundingBoxStrokeWidthChanged(value)
     }
 
     override fun onModelSelected(model: String) {
-//        detector.restart(false)
+        if (lastSelectedModel != model) {
+            lastSelectedModel = model
+            actor.onModelSelected(model)
+        }
+    }
+
+    fun getLastSelectedModel(): String {
+        return lastSelectedModel
     }
 }

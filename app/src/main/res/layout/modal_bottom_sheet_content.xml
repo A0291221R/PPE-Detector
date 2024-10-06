@@ -191,7 +191,6 @@
                 android:id="@+id/yolov8nRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Yolov8n"
                 android:textColor="#000000" />
 
