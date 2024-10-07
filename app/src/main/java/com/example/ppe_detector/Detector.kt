@@ -18,13 +18,13 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 class Detector(
     private val context: Context,
-    private val modelPath: String,
-    private val labelPath: String?,
+    private var modelPath: String,
+    private var labelPath: String?,
     private val detectorListener: DetectorListener,
     private val message: (String) -> Unit
 ) {
 
-    private var interpreter: Interpreter
+    private lateinit var interpreter: Interpreter
     private var labels = mutableListOf<String>()
 
     private var tensorWidth = 0
@@ -41,10 +41,14 @@ class Detector(
         .build()
 
     init {
+        reset()
+    }
+
+    private fun reset() {
         val compatList = CompatibilityList()
 
-        val options = Interpreter.Options().apply{
-            if(compatList.isDelegateSupportedOnThisDevice){
+        val options = Interpreter.Options().apply {
+            if (compatList.isDelegateSupportedOnThisDevice) {
                 val delegateOptions = compatList.bestOptionsForThisDevice
                 this.addDelegate(GpuDelegate(delegateOptions))
             } else {
@@ -58,13 +62,14 @@ class Detector(
         val inputShape = interpreter.getInputTensor(0)?.shape()
         val outputShape = interpreter.getOutputTensor(0)?.shape()
 
+        labels.clear()
         labels.addAll(extractNamesFromMetadata(model))
         if (labels.isEmpty()) {
             if (labelPath == null) {
                 message("Model not contains metadata, provide LABELS_PATH in Constants.kt")
                 labels.addAll(MetaData.TEMP_CLASSES)
             } else {
-                labels.addAll(extractNamesFromLabelFile(context, labelPath))
+                labels.addAll(extractNamesFromLabelFile(context, labelPath!!))
             }
         }
 
@@ -85,27 +90,11 @@ class Detector(
         }
     }
 
-    fun restart(isGpu: Boolean) {
+    fun reload(modelPath: String, labelPath: String) {
         interpreter.close()
-
-        val options = if (isGpu) {
-            val compatList = CompatibilityList()
-            Interpreter.Options().apply{
-                if(compatList.isDelegateSupportedOnThisDevice){
-                    val delegateOptions = compatList.bestOptionsForThisDevice
-                    this.addDelegate(GpuDelegate(delegateOptions))
-                } else {
-                    this.setNumThreads(4)
-                }
-            }
-        } else {
-            Interpreter.Options().apply{
-                this.setNumThreads(4)
-            }
-        }
-
-        val model = FileUtil.loadMappedFile(context, modelPath)
-        interpreter = Interpreter(model, options)
+        this.modelPath = modelPath
+        this.labelPath = labelPath
+        reset()
     }
 
     fun close() {

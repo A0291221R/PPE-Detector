@@ -17,8 +17,9 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.ppe_detector.Constants.LABELS_PATH
-import com.example.ppe_detector.Constants.MODEL_PATH
+import com.example.ppe_detector.Constants.yolov8n
+import com.example.ppe_detector.Constants.EfficientNet
+import com.example.ppe_detector.Constants.MobileNetV2
 import com.example.ppe_detector.databinding.ActivityMainBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener, OnActorUpda
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         cameraExecutor.execute {
-            detector = Detector(baseContext, MODEL_PATH, LABELS_PATH, this) {
+            detector = Detector(baseContext, yolov8n.MODEL_PATH, yolov8n.LABELS_PATH, this) {
                 toast(it)
             }
             detectorParamUpdateListener = DetectorParamUpdateHandler(baseContext, detector!!, this)
@@ -216,10 +217,24 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener, OnActorUpda
     }
 
     override fun onModelSelected(model: String) {
+        val modelPath:String =  when (model) {
+            "Yolov8n" ->  yolov8n.MODEL_PATH
+            "MobileNetV2" ->  MobileNetV2.MODEL_PATH
+            "EfficientNet" ->  EfficientNet.MODEL_PATH
+            else -> yolov8n.MODEL_PATH
+        }
+
+        val filePath: String =  when (model) {
+            "Yolov8n" ->  yolov8n.LABELS_PATH
+            "MobileNetV2" ->  MobileNetV2.LABELS_PATH
+            "EfficientNet" ->  EfficientNet.LABELS_PATH
+            else -> yolov8n.LABELS_PATH
+        }
+
         binding.msTv.text = "--.- ms"
         binding.fpsTv.text = "--.- FPS"
         cameraExecutor.submit {
-            detector?.restart(true)
+            detector?.reload(modelPath, filePath)
             binding.inferenceModel.text = model
         }
     }
