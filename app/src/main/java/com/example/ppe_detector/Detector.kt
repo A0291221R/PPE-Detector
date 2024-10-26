@@ -3,6 +3,7 @@ package com.example.ppe_detector
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
+import android.widget.Toast
 import com.example.ppe_detector.MetaData.extractNamesFromLabelFile
 import com.example.ppe_detector.MetaData.extractNamesFromMetadata
 import org.tensorflow.lite.DataType
@@ -85,8 +86,17 @@ class Detector(
         }
 
         if (outputShape != null) {
-            numChannel = outputShape[1]
-            numElements = outputShape[2]
+            if (outputShape.size == 2) {
+                numChannel = outputShape[1]
+                numElements = 1
+            } else if(outputShape.size == 3){
+                numChannel = outputShape[1]
+                numElements = outputShape[2]
+            } else {
+                numChannel = 1
+                numElements = 1
+            }
+
         }
     }
 

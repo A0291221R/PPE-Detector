@@ -218,16 +218,16 @@ class MainActivity : AppCompatActivity(), Detector.DetectorListener, OnActorUpda
 
     override fun onModelSelected(model: String) {
         val modelPath:String =  when (model) {
-            "Yolov8n" ->  yolov8n.MODEL_PATH
-            "MobileNetV2" ->  MobileNetV2.MODEL_PATH
-            "EfficientNet" ->  EfficientNet.MODEL_PATH
+            getString(R.string.modelA) ->  yolov8n.MODEL_PATH
+            getString(R.string.modelB) ->  MobileNetV2.MODEL_PATH
+            getString(R.string.modelC) ->  EfficientNet.MODEL_PATH
             else -> yolov8n.MODEL_PATH
         }
 
         val filePath: String =  when (model) {
-            "Yolov8n" ->  yolov8n.LABELS_PATH
-            "MobileNetV2" ->  MobileNetV2.LABELS_PATH
-            "EfficientNet" ->  EfficientNet.LABELS_PATH
+            getString(R.string.modelA) ->  yolov8n.LABELS_PATH
+            getString(R.string.modelB) ->  MobileNetV2.LABELS_PATH
+            getString(R.string.modelC) ->  EfficientNet.LABELS_PATH
             else -> yolov8n.LABELS_PATH
         }
 

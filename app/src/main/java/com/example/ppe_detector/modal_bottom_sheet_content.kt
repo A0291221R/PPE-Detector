@@ -57,18 +57,18 @@ class DetectorSettingBottomSheet(private val parameterUpdateListener: DetectorPa
 
         modelSelectionGroup.check(
             when (parameterUpdateListener.getLastSelectedModel()) {
-                "Yolov8n" ->  R.id.yolov8nRadioButton
-                "MobileNetV2" ->  R.id.mobilenetV2RadioButton
-                "EfficientNet" ->  R.id.efficientNetRadioButton
+                getString(R.string.modelA) ->  R.id.yolov8nRadioButton
+                getString(R.string.modelB)  ->  R.id.mobilenetV2RadioButton
+                getString(R.string.modelC) ->  R.id.efficientNetRadioButton
                 else -> R.id.yolov8nRadioButton
             }
         )
 
         modelSelectionGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedModel = when (checkedId) {
-                R.id.yolov8nRadioButton -> "Yolov8n"
-                R.id.mobilenetV2RadioButton -> "MobileNetV2"
-                R.id.efficientNetRadioButton -> "EfficientNet"
+                R.id.yolov8nRadioButton ->  getString(R.string.modelA)
+                R.id.mobilenetV2RadioButton ->  getString(R.string.modelB)
+                R.id.efficientNetRadioButton ->  getString(R.string.modelC)
                 else -> ""
             }
             parameterUpdateListener.onModelSelected(selectedModel)
